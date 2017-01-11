@@ -26,7 +26,7 @@ mkdir -p ${savesqldir}
 
 for db in $dbname
 do
-    mysqldump -h${dbhost} -u${dbuser} -p${dbpassword} --databases $db > ${savesqldir}/${filename}-${db}-${time}.sql
+    mysqldump -h${dbhost} -u${dbuser} -p${dbpassword} -E -R --databases $db > ${savesqldir}/${filename}-${db}-${time}.sql
 done
 
 tar Jcf ${savesqldir}.tar.xz ${filename}-sql-${time}/
