@@ -1,37 +1,39 @@
 #!/bin/bash
 
-dbhost=10.10.40.214
-dbuser=aaaa
-dbpassword=abc123
-filename=aaaaa
-workdir=/data/sqlbak
+dbhost=10.10.162.200
+dbuser=root
+dbpassword=XIAOzi2308842
+domain=7mtt
+bakdir=/data/sqlbak
 time=`date '+%F-%H-%M'`
-#rmname=`date "+%F" -d'-1 month'`
-savesqldir=${workdir}/${filename}-sql-${time}
+savesqldir=${bakdir}/${domain}-sql-${time}
 
-#获得数据库名
+#获得所有数据库名
 dbname=`mysql -e "show databases;" -h${dbhost} -u${dbuser} -p${dbpassword}| grep -Ev "Database|information_schema|mysql|test|performance_schema"`
 
 if [ $? -ne 0 ]
 then
 echo 'error:get database name error!'
+exit 1
 fi
 
+#创建备份目录
+[ ! -d $bakdir ] && mkdir -p $bakdir
 
-[ ! -d $workdir ] && mkdir -p $workdir
-
-cd ${workdir}
+cd ${bakdir}
 
 mkdir -p ${savesqldir}
 
+#备份数据库
 for db in $dbname
 do
-    mysqldump -h${dbhost} -u${dbuser} -p${dbpassword} -E -R --databases $db > ${savesqldir}/${filename}-${db}-${time}.sql
+    mysqldump -h${dbhost} -u${dbuser} -p${dbpassword} -R -E --databases $db > ${savesqldir}/${domain}-${db}-${time}.sql
 done
 
-tar Jcf ${savesqldir}.tar.xz ${filename}-sql-${time}/
+#打包压缩
+tar Jcf ${savesqldir}.tar.xz ${domain}-sql-${time}/
 
-#删除30天前的备份
-find /data/sqlbak  -type d -name "${filename}-*" -o -mtime +30 |xargs rm -rf 
+#清理过期文件
+find ${bakdir}  -type d -name "${domain}-*" -o -mtime +30 |xargs rm -rf 
 
 exit 0
