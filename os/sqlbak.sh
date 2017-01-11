@@ -2,7 +2,8 @@
 
 dbhost=10.10.162.200
 dbuser=root
-dbpassword=XIAOzi2308842
+dbpassword=********
+#备份文件前缀
 domain=7mtt
 bakdir=/data/sqlbak
 time=`date '+%F-%H-%M'`
