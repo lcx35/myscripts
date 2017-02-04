@@ -44,6 +44,9 @@ else
 	do
 	tar --newer-mtime=$(date '+%Y-%m')-01 -cJf ${savename}/${i}.tar.xz ${i}
 	done
+
+	#清理/tmp目录
+	find /tmp -type f -mtime +2 -exec rm -f {} \;
 fi
 
 exit 0
